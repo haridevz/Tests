@@ -3,186 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading</title>
+    <title>Fullscreen Loop Video</title>
     <style>
-        * {
+        html, body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            background: #000;
-            font-family: Arial, sans-serif;
-        }
-
-        .background {
-            position: fixed;
-            top: -2.5%;
-            left: -2.5%;
-            width: 105%;
-            height: 105%;
-            background-image: url('bg.jpg');
-            background-size: cover;
-            background-position: center;
-            z-index: 1;
-            will-change: transform;
-            transition: transform 0.1s ease-out;
-        }
-
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 2;
-        }
-
-        .vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
-            z-index: 3;
-            pointer-events: none;
+            overflow: hidden;
+            background: black;
         }
-
-        .loading-text {
-            position: fixed;
-            bottom: 50px;
+        video {
+            position: absolute;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            z-index: 4;
-            font-size: 32px;
-            color: #fff;
-            letter-spacing: 3px;
-            font-weight: 300;
-            animation: textGlow 1.5s ease-in-out infinite;
-        }
-
-        @keyframes textGlow {
-            0%, 100% {
-                text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
-                opacity: 0.8;
-            }
-            50% {
-                text-shadow: 0 0 40px rgba(138, 43, 226, 0.9);
-                opacity: 1;
-            }
-        }
-
-        audio {
-            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
 <body>
-    <div class="background"></div>
-    <canvas id="particleCanvas"></canvas>
-    <div class="vignette"></div>
-    <div class="loading-text">LOADING...</div>
-    <audio id="bgMusic" autoplay loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
-
-    <script>
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        const background = document.querySelector('.background');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        function updateParallax() {
-            const time = Date.now() * 0.001;
-            const offsetX = Math.sin(time) * 30;
-            const offsetY = Math.cos(time * 0.7) * 30;
-            background.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-        }
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height - canvas.height;
-                this.size = Math.random() * 8 + 2;
-                this.speedY = Math.random() * 2 + 1;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.opacity = Math.random() * 0.5 + 0.3;
-                this.fadeRate = Math.random() * 0.005 + 0.005;
-            }
-
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                this.opacity -= this.fadeRate;
-            }
-
-            draw() {
-                ctx.fillStyle = `rgba(138, 43, 226, ${this.opacity})`;
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = 'rgba(138, 43, 226, 0.8)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            isDead() {
-                return this.opacity <= 0;
-            }
-        }
-
-        let particles = [];
-
-        function createParticles() {
-            for (let i = 0; i < 3; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            createParticles();
-
-            particles.forEach((particle, index) => {
-                particle.update();
-                particle.draw();
-
-                if (particle.isDead()) {
-                    particles.splice(index, 1);
-                }
-            });
-
-            updateParallax();
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Попытка автозапуска музыки
-        document.addEventListener('click', () => {
-            const audio = document.getElementById('bgMusic');
-            audio.play().catch(() => {
-                console.log('Автозапуск заблокирован браузером');
-            });
-        });
-
-        // Попытка запустить музыку при загрузке страницы
-        window.addEventListener('load', () => {
-            const audio = document.getElementById('bgMusic');
-            audio.play().catch(() => {
-                console.log('Автозапуск заблокирован браузером');
-            });
-        });
-    </script>
+    <video autoplay muted loop playsinline>
+        <source src="https://github.com/haridevz/Tests/raw/refs/heads/master/loading.webm" type="video/webm">
+    </video>
 </body>
 </html>
